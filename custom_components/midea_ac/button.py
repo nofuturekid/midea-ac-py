@@ -36,6 +36,25 @@ async def async_setup_entry(
                                     "self_clean",
                                     entity_category=EntityCategory.DIAGNOSTIC,
                                     ))
+
+    # Filter run-time resets. These are classic-protocol maintenance actions
+    # that aren't reliably advertised via capabilities, so they're created
+    # disabled-by-default and gated on a best-effort support signal.
+    if hasattr(device, "reset_filter") and getattr(device, "supports_filter_reminder", False):
+        entities.append(MideaButton(coordinator,
+                                    "reset_filter",
+                                    "reset_filter",
+                                    entity_category=EntityCategory.CONFIG,
+                                    enabled_default=False,
+                                    ))
+
+    if hasattr(device, "reset_fresh_air_filter") and getattr(device, "supports_fresh_air", False):
+        entities.append(MideaButton(coordinator,
+                                    "reset_fresh_air_filter",
+                                    "reset_fresh_air_filter",
+                                    entity_category=EntityCategory.CONFIG,
+                                    enabled_default=False,
+                                    ))
     add_entities(entities)
 
 
@@ -47,12 +66,14 @@ class MideaButton(MideaCoordinatorEntity, ButtonEntity):
                  method: str,
                  translation_key:  str | None = None,
                  *,
-                 entity_category: EntityCategory = None) -> None:
+                 entity_category: EntityCategory = None,
+                 enabled_default: bool = True) -> None:
         MideaCoordinatorEntity.__init__(self, coordinator)
 
         self._method = method
         self._entity_category = entity_category
         self._attr_translation_key = translation_key
+        self._attr_entity_registry_enabled_default = enabled_default
 
     @property
     def device_info(self) -> dict:

@@ -214,6 +214,12 @@
     "button": {
       "self_clean": {
         "name": "Start self clean"
+      },
+      "reset_filter": {
+        "name": "Reset filter"
+      },
+      "reset_fresh_air_filter": {
+        "name": "Reset fresh air filter"
       }
     },
     "number": {
