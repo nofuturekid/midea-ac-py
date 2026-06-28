@@ -148,7 +148,7 @@ async def async_setup_entry(
             "outdoor_unit_power",
             SensorDeviceClass.POWER,
             UnitOfPower.WATT,
-            "Power",
+            "Total Power",
         )
     )
     entities.append(
