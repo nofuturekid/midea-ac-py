@@ -242,6 +242,12 @@
       },
       "cosy_sleep_mode": {
         "name": "Cosy sleep level"
+      },
+      "parent_control_temp_up": {
+        "name": "Temp range max"
+      },
+      "parent_control_temp_down": {
+        "name": "Temp range min"
       }
     },
     "select": {
@@ -376,13 +382,13 @@
         "name": "Power save"
       },
       "low_frequency_fan": {
-        "name": "Low frequency fan"
+        "name": "Smart Wind"
       },
       "comfort_sleep": {
         "name": "Comfort sleep"
       },
       "diy": {
-        "name": "DIY mode"
+        "name": "Entfeuchtung"
       },
       "smart_eye": {
         "name": "iSense"
@@ -400,6 +406,9 @@
         "name": "PMV comfort"
       },
       "parent_control": {
+        "name": "Temp Range"
+      },
+      "remote_control_lock": {
         "name": "Child lock"
       }
     }

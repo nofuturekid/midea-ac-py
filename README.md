@@ -50,10 +50,11 @@ This fork tracks [mill1000/midea-ac-py](https://github.com/mill1000/midea-ac-py)
 
 **Additional controls:**
 
-- Child Lock switch
+- Temp Range switch + min/max number entities (temperature range limit; formerly mislabeled "Child Lock")
+- Child Lock switch (real remote/panel lock; disabled by default, set path untested)
 - Filter reset button(s)
 - Power-on/off timer number entities (1-minute step)
-- Extended AC feature switches/entities
+- Extended AC feature switches/entities (incl. iSense, Smart Wind, Entfeuchtung — corrected labels)
 
 Plus extra translations and icons. Fresh air is exposed via the upstream fan entity. See [About This Distribution](#about-this-distribution) for feature provenance.
 
