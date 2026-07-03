@@ -521,6 +521,38 @@ async def async_setup_entry(
                     "Max current (raw)",
                     group=6,
                 ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "d_axis_current",
+                    None,
+                    None,
+                    "D-axis current (raw)",
+                    group=6,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "q_axis_current",
+                    None,
+                    None,
+                    "Q-axis current (raw)",
+                    group=6,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "torque_adjust_angle",
+                    None,
+                    None,
+                    "Torque compensation angle (raw)",
+                    group=6,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "torque_adjust_value",
+                    None,
+                    None,
+                    "Torque compensation value (raw)",
+                    group=6,
+                ),
             ]
         )
 
