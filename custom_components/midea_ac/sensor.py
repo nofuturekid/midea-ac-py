@@ -72,21 +72,13 @@ async def async_setup_entry(
     # (upstream); TurboLed's unconditional duplicate was dropped to avoid a
     # colliding unique_id.
     entities.append(
-        MideaBoolSensor(
-            coordinator,
-            "defrost_active",
-            None,
-            "",
-            "Defrost",
-        )
-    )
-    entities.append(
         MideaNewSensor(
             coordinator,
             "compressor_frequency",
             SensorDeviceClass.FREQUENCY,
             UnitOfFrequency.HERTZ,
-            "Compressor Frequency",
+            "Compressor frequency",
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
@@ -95,16 +87,18 @@ async def async_setup_entry(
             "compressor_current",
             SensorDeviceClass.CURRENT,
             UnitOfElectricCurrent.AMPERE,
-            "Compressor Current",
+            "Compressor current",
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
         MideaNewSensor(
             coordinator,
-            "indoor_fan_frequency",
+            "indoor_target_frequency",
             SensorDeviceClass.FREQUENCY,
             UnitOfFrequency.HERTZ,
-            "Indoor Fan Frequency",
+            "Indoor target frequency",
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
@@ -113,7 +107,8 @@ async def async_setup_entry(
             "outdoor_unit_total_current",
             SensorDeviceClass.CURRENT,
             UnitOfElectricCurrent.AMPERE,
-            "Current",
+            "Outdoor current",
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
@@ -122,7 +117,8 @@ async def async_setup_entry(
             "outdoor_unit_voltage",
             SensorDeviceClass.VOLTAGE,
             UnitOfElectricPotential.VOLT,
-            "Voltage",
+            "Outdoor voltage",
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
@@ -132,6 +128,7 @@ async def async_setup_entry(
             SensorDeviceClass.TEMPERATURE,
             UnitOfTemperature.CELSIUS,
             "Indoor coil temperature (T2)",
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
@@ -141,6 +138,7 @@ async def async_setup_entry(
             SensorDeviceClass.TEMPERATURE,
             UnitOfTemperature.CELSIUS,
             "Outdoor coil temperature (T3)",
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
@@ -150,6 +148,7 @@ async def async_setup_entry(
             SensorDeviceClass.TEMPERATURE,
             UnitOfTemperature.CELSIUS,
             "Discharge temperature (TP)",
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
@@ -159,6 +158,7 @@ async def async_setup_entry(
             None,
             "",
             "Indoor fan speed",
+            entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
@@ -167,7 +167,7 @@ async def async_setup_entry(
             "outdoor_unit_power",
             SensorDeviceClass.POWER,
             UnitOfPower.WATT,
-            "Total Power",
+            "Total power",
         )
     )
     entities.append(
@@ -187,7 +187,7 @@ async def async_setup_entry(
                 "in_version",
                 None,
                 None,
-                "Firmware Version",
+                "Firmware version",
                 state_class=None,
             )
         )
@@ -265,6 +265,7 @@ async def async_setup_entry(
                 None,
                 None,
                 "outdoor_fan_speed",
+                entity_category=EntityCategory.DIAGNOSTIC,
             )
         )
 
@@ -571,6 +572,7 @@ class MideaSensor(MideaCoordinatorEntity, SensorEntity):
         translation_key: str | None = None,
         *,
         state_class: SensorStateClass = SensorStateClass.MEASUREMENT,
+        entity_category: EntityCategory | None = None,
     ) -> None:
         MideaCoordinatorEntity.__init__(self, coordinator)
 
@@ -579,6 +581,7 @@ class MideaSensor(MideaCoordinatorEntity, SensorEntity):
         self._state_class = state_class
         self._unit = unit
         self._attr_translation_key = translation_key
+        self._attr_entity_category = entity_category
 
     @property
     def device_info(self) -> dict:
@@ -632,20 +635,6 @@ class MideaNewSensor(MideaSensor):
         self._attr_name = self._attr_translation_key
         self._attr_translation_key = None
         self._attr_has_entity_name = False
-
-
-class MideaBoolSensor(MideaSensor):
-    def __init__(self, *args, **kwargs) -> None:
-        MideaNewSensor.__init__(self, *args, **kwargs)
-
-    @property
-    def native_value(self) -> int | None:
-        """Return the current native value."""
-        state = getattr(self._device, self._prop, None)
-        if state:
-            return 1
-        else:
-            return 0
 
 
 class MideaEnergySensor(MideaSensor):
