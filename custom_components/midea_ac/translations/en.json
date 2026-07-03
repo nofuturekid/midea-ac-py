@@ -244,10 +244,10 @@
         "name": "Cosy sleep level"
       },
       "parent_control_temp_up": {
-        "name": "Temp range max"
+        "name": "Temp range min"
       },
       "parent_control_temp_down": {
-        "name": "Temp range min"
+        "name": "Temp range max"
       }
     },
     "select": {
