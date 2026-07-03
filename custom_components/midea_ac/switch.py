@@ -53,7 +53,7 @@ async def async_setup_entry(
         entities.append(MideaSwitch(coordinator, "flash", entity_category=EntityCategory.CONFIG))
 
     if hasattr(device, "out_silent") and getattr(device, "supports_out_silent", False):
-        entities.append(MideaSwitch(coordinator, "out_silent", entity_category=EntityCategory.CONFIG))
+        entities.append(MideaSwitch(coordinator, "out_silent"))
 
     if hasattr(device, "purifier"):
         # AC has on/off purifier
