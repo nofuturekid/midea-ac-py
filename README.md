@@ -42,7 +42,7 @@ This fork tracks [mill1000/midea-ac-py](https://github.com/mill1000/midea-ac-py)
 **Additional sensors:**
 
 - Total Power (outdoor unit), Compressor Current, Compressor Frequency
-- Indoor Fan Frequency and Indoor Fan Speed, Outdoor Fan Speed
+- Indoor target frequency, indoor/outdoor fan speed
 - Coil temperatures (T2/T3) and Discharge Temperature (TP)
 - Louver Angle, Defrost status, Firmware Version
 - `filter_alert` binary sensor
