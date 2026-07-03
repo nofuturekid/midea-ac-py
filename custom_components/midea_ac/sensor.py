@@ -11,6 +11,7 @@ from homeassistant.const import (PERCENTAGE, EntityCategory,
                                  UnitOfElectricCurrent,
                                  UnitOfElectricPotential, UnitOfEnergy,
                                  UnitOfFrequency, UnitOfPower,
+                                 REVOLUTIONS_PER_MINUTE,
                                  UnitOfTemperature, UnitOfTime)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
@@ -156,7 +157,7 @@ async def async_setup_entry(
             coordinator,
             "indoor_fan_speed",
             None,
-            "",
+            REVOLUTIONS_PER_MINUTE,
             "Indoor fan speed",
             entity_category=EntityCategory.DIAGNOSTIC,
         )
@@ -263,7 +264,7 @@ async def async_setup_entry(
                 coordinator,
                 "outdoor_fan_speed",
                 None,
-                None,
+                REVOLUTIONS_PER_MINUTE,
                 "outdoor_fan_speed",
                 entity_category=EntityCategory.DIAGNOSTIC,
             )
@@ -367,7 +368,7 @@ async def async_setup_entry(
                     coordinator,
                     "indoor_target_fan_speed",
                     None,
-                    None,
+                    REVOLUTIONS_PER_MINUTE,
                     "Indoor target fan speed",
                     group=None,
                 ),
@@ -384,6 +385,7 @@ async def async_setup_entry(
                     UnitOfTime.SECONDS,
                     "Current run time",
                     group=0,
+                    suggested_display_precision=0,
                 ),
                 MideaDevParamSensor(
                     coordinator,
@@ -393,6 +395,7 @@ async def async_setup_entry(
                     "Total run time",
                     group=0,
                     state_class=SensorStateClass.TOTAL_INCREASING,
+                    suggested_display_precision=0,
                 ),
                 MideaDevParamSensor(
                     coordinator,
@@ -402,6 +405,7 @@ async def async_setup_entry(
                     "Power on time",
                     group=0,
                     state_class=SensorStateClass.TOTAL_INCREASING,
+                    suggested_display_precision=0,
                 ),
             ]
         )
@@ -418,6 +422,7 @@ async def async_setup_entry(
                     UnitOfTime.SECONDS,
                     "Compressor run time",
                     group=5,
+                    suggested_display_precision=0,
                 ),
                 MideaDevParamSensor(
                     coordinator,
@@ -427,6 +432,7 @@ async def async_setup_entry(
                     "Compressor total run time",
                     group=5,
                     state_class=SensorStateClass.TOTAL_INCREASING,
+                    suggested_display_precision=0,
                 ),
                 MideaDevParamSensor(
                     coordinator,
@@ -573,6 +579,7 @@ class MideaSensor(MideaCoordinatorEntity, SensorEntity):
         *,
         state_class: SensorStateClass = SensorStateClass.MEASUREMENT,
         entity_category: EntityCategory | None = None,
+        suggested_display_precision: int | None = None,
     ) -> None:
         MideaCoordinatorEntity.__init__(self, coordinator)
 
@@ -582,6 +589,7 @@ class MideaSensor(MideaCoordinatorEntity, SensorEntity):
         self._unit = unit
         self._attr_translation_key = translation_key
         self._attr_entity_category = entity_category
+        self._attr_suggested_display_precision = suggested_display_precision
 
     @property
     def device_info(self) -> dict:
