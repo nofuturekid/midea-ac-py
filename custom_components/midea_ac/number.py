@@ -62,6 +62,7 @@ async def async_setup_entry(
                 native_step=1,
                 mode=NumberMode.SLIDER,
                 enabled_default=False,
+                entity_category=EntityCategory.CONFIG,
             )
         )
 
@@ -79,6 +80,7 @@ async def async_setup_entry(
                     unit=UnitOfTemperature.CELSIUS,
                     mode=NumberMode.SLIDER,
                     enabled_default=False,
+                    entity_category=EntityCategory.CONFIG,
                 )
             )
 
@@ -100,6 +102,7 @@ class MideaPropertyNumber(MideaCoordinatorEntity, NumberEntity):
         mode: NumberMode = NumberMode.BOX,
         translation_key: str | None = None,
         enabled_default: bool = True,
+        entity_category: EntityCategory | None = None,
     ) -> None:
         MideaCoordinatorEntity.__init__(self, coordinator)
 
@@ -113,6 +116,7 @@ class MideaPropertyNumber(MideaCoordinatorEntity, NumberEntity):
         self._attr_native_unit_of_measurement = unit
         self._attr_mode = mode
         self._attr_entity_registry_enabled_default = enabled_default
+        self._attr_entity_category = entity_category
 
     @property
     def device_info(self) -> dict:
