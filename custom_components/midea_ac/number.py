@@ -233,6 +233,7 @@ class _MideaTimerNumber(MideaCoordinatorEntity, NumberEntity):
     _attr_native_max_value = _TIMER_MAX_MINUTES
     _attr_native_step = _TIMER_STEP_MINUTES
     _attr_mode = NumberMode.BOX
+    _attr_entity_category = EntityCategory.CONFIG
 
     # Attribute on the device that backs this timer, e.g. "on_timer"
     _timer_attr: str
