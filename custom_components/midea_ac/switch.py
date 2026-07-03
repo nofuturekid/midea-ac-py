@@ -80,7 +80,10 @@ async def async_setup_entry(
     if hasattr(device, "parent_control"):
         entities.append(
             MideaSwitch(
-                coordinator, "parent_control", entity_category=EntityCategory.CONFIG
+                coordinator,
+                "parent_control",
+                entity_category=EntityCategory.CONFIG,
+                enabled_default=False,
             )
         )
 
@@ -99,14 +102,24 @@ async def async_setup_entry(
     # Extended classic-protocol toggles. Most have no capability bit, so we
     # create them disabled-by-default and let users enable the ones their unit
     # actually supports.
+    # iSense and anti-cold are useful enough to ship enabled by default.
+    for prop in ("smart_eye", "anti_cold"):
+        if hasattr(device, prop):
+            entities.append(
+                MideaSwitch(
+                    coordinator,
+                    prop,
+                    entity_category=EntityCategory.CONFIG,
+                )
+            )
+
+    # Remaining classic-protocol toggles are niche; disabled by default.
     for prop in (
         "power_save",
         "low_frequency_fan",
         "comfort_sleep",
         "diy",
-        "smart_eye",
         "ventilation",
-        "anti_cold",
         "night_light",
         "pmv",
     ):

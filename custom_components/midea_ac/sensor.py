@@ -110,6 +110,7 @@ async def async_setup_entry(
             UnitOfElectricCurrent.AMPERE,
             "Outdoor current",
             entity_category=EntityCategory.DIAGNOSTIC,
+            enabled_default=False,
         )
     )
     entities.append(
@@ -120,6 +121,7 @@ async def async_setup_entry(
             UnitOfElectricPotential.VOLT,
             "Outdoor voltage",
             entity_category=EntityCategory.DIAGNOSTIC,
+            enabled_default=False,
         )
     )
     entities.append(
@@ -178,6 +180,8 @@ async def async_setup_entry(
             None,
             "",
             "Louver angle",
+            entity_category=EntityCategory.DIAGNOSTIC,
+            enabled_default=False,
         )
     )
     # Indoor unit code/version string (read-only). Only present when reported.
@@ -190,6 +194,7 @@ async def async_setup_entry(
                 None,
                 "Firmware version",
                 state_class=None,
+                entity_category=EntityCategory.DIAGNOSTIC,
             )
         )
     # Only add energy sensors if device supports energy requests
@@ -290,6 +295,7 @@ async def async_setup_entry(
                     UnitOfFrequency.HERTZ,
                     "Outdoor target frequency",
                     group=3,
+                    enabled_default=True,
                 ),
                 MideaDevParamSensor(
                     coordinator,
@@ -371,6 +377,7 @@ async def async_setup_entry(
                     REVOLUTIONS_PER_MINUTE,
                     "Indoor target fan speed",
                     group=None,
+                    enabled_default=True,
                 ),
             ]
         )
@@ -457,6 +464,7 @@ async def async_setup_entry(
                     UnitOfTemperature.CELSIUS,
                     "Compensated target temperature",
                     group=5,
+                    enabled_default=True,
                 ),
                 MideaDevParamSensor(
                     coordinator,
@@ -580,6 +588,7 @@ class MideaSensor(MideaCoordinatorEntity, SensorEntity):
         state_class: SensorStateClass = SensorStateClass.MEASUREMENT,
         entity_category: EntityCategory | None = None,
         suggested_display_precision: int | None = None,
+        enabled_default: bool = True,
     ) -> None:
         MideaCoordinatorEntity.__init__(self, coordinator)
 
@@ -590,6 +599,7 @@ class MideaSensor(MideaCoordinatorEntity, SensorEntity):
         self._attr_translation_key = translation_key
         self._attr_entity_category = entity_category
         self._attr_suggested_display_precision = suggested_display_precision
+        self._attr_entity_registry_enabled_default = enabled_default
 
     @property
     def device_info(self) -> dict:
@@ -655,7 +665,6 @@ class MideaEnergySensor(MideaSensor):
 
         self._format = format
         self._scale = scale
-        self._attr_entity_registry_enabled_default = False
 
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added to hass."""
@@ -696,20 +705,15 @@ class MideaGroup5Sensor(MideaSensor, MideaGroup5Entity):
     def __init__(self, *args, **kwargs) -> None:
         MideaSensor.__init__(self, *args, **kwargs)
 
-        # Group5 sensors start disabled in case device doesn't support them
-        self._attr_entity_registry_enabled_default = False
-
 
 class MideaDevParamSensor(MideaSensor, MideaGroupEntity):
     """Diagnostic sensor for Midea AC dev parameter group data."""
 
-    def __init__(self, *args, group: int, **kwargs) -> None:
-        MideaSensor.__init__(self, *args, **kwargs)
+    def __init__(self, *args, group: int, enabled_default: bool = False, **kwargs) -> None:
+        MideaSensor.__init__(self, *args, enabled_default=enabled_default, **kwargs)
 
         self._group = group
 
-        # Dev parameter sensors start disabled since support is device specific
-        self._attr_entity_registry_enabled_default = False
         self._attr_entity_category = EntityCategory.DIAGNOSTIC
 
         self._attr_name = self._attr_translation_key
