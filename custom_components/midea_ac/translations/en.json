@@ -190,7 +190,7 @@
     },
     "binary_sensor": {
       "filter_alert": {
-        "name": "Filter alert"
+        "name": "Filter timer alert"
       },
       "self_clean": {
         "name": "Self clean"
@@ -216,7 +216,7 @@
         "name": "Start self clean"
       },
       "reset_filter": {
-        "name": "Reset filter"
+        "name": "Filter timer reset"
       },
       "reset_fresh_air_filter": {
         "name": "Reset fresh air filter"
