@@ -39,30 +39,26 @@ async def async_setup_entry(
     if hasattr(device, "breeze_away") and getattr(
         device, "supports_breeze_away", False
     ):
-        entities.append(MideaSwitch(coordinator, "breeze_away"))
+        entities.append(MideaSwitch(coordinator, "breeze_away", entity_category=EntityCategory.CONFIG))
 
     if hasattr(device, "breeze_mild") and getattr(
         device, "supports_breeze_mild", False
     ):
-        entities.append(MideaSwitch(coordinator, "breeze_mild"))
+        entities.append(MideaSwitch(coordinator, "breeze_mild", entity_category=EntityCategory.CONFIG))
 
     if hasattr(device, "breezeless") and getattr(device, "supports_breezeless", False):
-        entities.append(MideaSwitch(coordinator, "breezeless"))
+        entities.append(MideaSwitch(coordinator, "breezeless", entity_category=EntityCategory.CONFIG))
 
     if hasattr(device, "flash") and getattr(device, "supports_flash", False):
-        entities.append(MideaSwitch(coordinator, "flash"))
+        entities.append(MideaSwitch(coordinator, "flash", entity_category=EntityCategory.CONFIG))
 
     if hasattr(device, "out_silent") and getattr(device, "supports_out_silent", False):
-        entities.append(MideaSwitch(coordinator, "out_silent"))
+        entities.append(MideaSwitch(coordinator, "out_silent", entity_category=EntityCategory.CONFIG))
 
     if hasattr(device, "purifier"):
         # AC has on/off purifier
         if getattr(device, "supports_purifier", False):
-            entities.append(
-                MideaSwitch(
-                    coordinator, "purifier", entity_category=EntityCategory.CONFIG
-                )
-            )
+            entities.append(MideaSwitch(coordinator, "purifier"))
 
         # Create switch for CC purifier if only 2 modes supported
         if len(getattr(device, "supported_purifier_modes", [])) == 2:
@@ -70,7 +66,6 @@ async def async_setup_entry(
                 MideaSwitch(
                     coordinator,
                     "purifier",
-                    entity_category=EntityCategory.CONFIG,
                     state_map={
                         False: device.PurifierMode.OFF,
                         True: device.PurifierMode.ON,
@@ -159,9 +154,9 @@ class MideaDisplaySwitch(MideaCoordinatorEntity, SwitchEntity):
         return f"{self._device.id}-display"
 
     @property
-    def entity_category(self) -> str:
+    def entity_category(self) -> str | None:
         """Return the entity category of this entity."""
-        return EntityCategory.CONFIG
+        return None
 
     @property
     def is_on(self) -> bool | None:

@@ -1,4 +1,5 @@
 """Button platform for Midea Smart AC."""
+
 from __future__ import annotations
 
 import logging
@@ -30,12 +31,17 @@ async def async_setup_entry(
 
     # Create entities for supported features
     entities = []
-    if hasattr(device, "start_self_clean") and getattr(device, "supports_self_clean", False):
-        entities.append(MideaButton(coordinator,
-                                    "start_self_clean",
-                                    "self_clean",
-                                    entity_category=EntityCategory.DIAGNOSTIC,
-                                    ))
+    if hasattr(device, "start_self_clean") and getattr(
+        device, "supports_self_clean", False
+    ):
+        entities.append(
+            MideaButton(
+                coordinator,
+                "start_self_clean",
+                "self_clean",
+                entity_category=EntityCategory.CONFIG,
+            )
+        )
 
     # Filter run-time resets. These are classic-protocol maintenance actions
     # that aren't reliably advertised via capabilities, so they're gated on a
@@ -45,31 +51,41 @@ async def async_setup_entry(
         getattr(device, "supports_filter_reminder", False)
         or getattr(device, "filter_alert", None) is not None
     ):
-        entities.append(MideaButton(coordinator,
-                                    "reset_filter",
-                                    "reset_filter",
-                                    entity_category=EntityCategory.CONFIG,
-                                    ))
+        entities.append(
+            MideaButton(
+                coordinator,
+                "reset_filter",
+                "reset_filter",
+                entity_category=EntityCategory.CONFIG,
+            )
+        )
 
-    if hasattr(device, "reset_fresh_air_filter") and getattr(device, "supports_fresh_air", False):
-        entities.append(MideaButton(coordinator,
-                                    "reset_fresh_air_filter",
-                                    "reset_fresh_air_filter",
-                                    entity_category=EntityCategory.CONFIG,
-                                    ))
+    if hasattr(device, "reset_fresh_air_filter") and getattr(
+        device, "supports_fresh_air", False
+    ):
+        entities.append(
+            MideaButton(
+                coordinator,
+                "reset_fresh_air_filter",
+                "reset_fresh_air_filter",
+                entity_category=EntityCategory.CONFIG,
+            )
+        )
     add_entities(entities)
 
 
 class MideaButton(MideaCoordinatorEntity, ButtonEntity):
     """Button for Midea AC."""
 
-    def __init__(self,
-                 coordinator: MideaDeviceUpdateCoordinator,
-                 method: str,
-                 translation_key:  str | None = None,
-                 *,
-                 entity_category: EntityCategory = None,
-                 enabled_default: bool = True) -> None:
+    def __init__(
+        self,
+        coordinator: MideaDeviceUpdateCoordinator,
+        method: str,
+        translation_key: str | None = None,
+        *,
+        entity_category: EntityCategory = None,
+        enabled_default: bool = True,
+    ) -> None:
         MideaCoordinatorEntity.__init__(self, coordinator)
 
         self._method = method
@@ -81,9 +97,7 @@ class MideaButton(MideaCoordinatorEntity, ButtonEntity):
     def device_info(self) -> dict:
         """Return info for device registry."""
         return {
-            "identifiers": {
-                (DOMAIN, self._device.id)
-            },
+            "identifiers": {(DOMAIN, self._device.id)},
         }
 
     @property
