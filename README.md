@@ -46,6 +46,7 @@ This fork tracks [mill1000/midea-ac-py](https://github.com/mill1000/midea-ac-py)
 - Coil temperatures (T2/T3) and Discharge Temperature (TP)
 - Louver Angle, Defrost status, Firmware Version
 - `filter_alert` binary sensor
+- Dev parameter diagnostics (opt-in, disabled by default): expansion valve position, outdoor target frequency, IPM temperature (raw), DC bus voltage (raw), return air temperature (raw), outdoor status flags, compressor run time (current/total), min/max voltage, fault count, min/max outdoor temperature, compressor peak current (raw)
 
 **Additional controls:**
 

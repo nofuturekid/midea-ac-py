@@ -37,6 +37,7 @@ class MideaDeviceUpdateCoordinator(DataUpdateCoordinator, Generic[MideaDevice]):
         self._proxy: MideaDeviceProxy[MideaDevice] = MideaDeviceProxy(device)
         self._energy_sensors = 0
         self._group5_entities = 0
+        self._group_entities = {}
 
     async def _async_update_data(self) -> None:
         """Update the device data."""
@@ -102,6 +103,30 @@ class MideaDeviceUpdateCoordinator(DataUpdateCoordinator, Generic[MideaDevice]):
         self._proxy.set_direct(
             "enable_group5_data_requests", self._group5_entities > 0)
 
+    def register_group_entity(self, group: int) -> None:
+        """Record that an optional group data entity is active."""
+
+        attr = f"enable_group{group}_data_requests"
+        if not hasattr(self._proxy, attr):
+            raise TypeError(f"Device does not support group {group} data.")
+
+        self._group_entities[group] = self._group_entities.get(group, 0) + 1
+
+        # Enable requests
+        self._proxy.set_direct(attr, True)
+
+    def unregister_group_entity(self, group: int) -> None:
+        """Record that an optional group data entity is inactive."""
+
+        attr = f"enable_group{group}_data_requests"
+        if not hasattr(self._proxy, attr):
+            raise TypeError(f"Device does not support group {group} data.")
+
+        self._group_entities[group] = self._group_entities.get(group, 0) - 1
+
+        # Disable requests if last entity
+        self._proxy.set_direct(attr, self._group_entities[group] > 0)
+
 
 class MideaCoordinatorEntity(CoordinatorEntity[MideaDeviceUpdateCoordinator], Generic[MideaDevice]):
     """Coordinator entity for Midea Smart AC."""
@@ -136,3 +161,25 @@ class MideaGroup5Entity(MideaCoordinatorEntity):
 
         # Unregister group5 sensor with coordinator
         self.coordinator.unregister_group5_entity()
+
+
+class MideaGroupEntity(MideaCoordinatorEntity):
+    """Entity that relies on optional group data requests."""
+
+    _group: int
+
+    async def async_added_to_hass(self) -> None:
+        """Run when entity about to be added to hass."""
+        # Call super method to ensure lifecycle is properly handled
+        await super().async_added_to_hass()
+
+        # Register group entity with coordinator
+        self.coordinator.register_group_entity(self._group)
+
+    async def async_will_remove_from_hass(self) -> None:
+        """Run when entity will be removed from hass."""
+        # Call super method to ensure lifecycle is properly handled
+        await super().async_will_remove_from_hass()
+
+        # Unregister group entity with coordinator
+        self.coordinator.unregister_group_entity(self._group)

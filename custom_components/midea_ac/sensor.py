@@ -7,10 +7,11 @@ import logging
 from homeassistant.components.sensor import (SensorDeviceClass, SensorEntity,
                                              SensorStateClass)
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import (PERCENTAGE, UnitOfElectricCurrent,
+from homeassistant.const import (PERCENTAGE, EntityCategory,
+                                 UnitOfElectricCurrent,
                                  UnitOfElectricPotential, UnitOfEnergy,
                                  UnitOfFrequency, UnitOfPower,
-                                 UnitOfTemperature)
+                                 UnitOfTemperature, UnitOfTime)
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from msmart.utils import MideaIntEnum
@@ -19,7 +20,7 @@ from .const import (CONF_ENERGY_DATA_FORMAT, CONF_ENERGY_DATA_SCALE,
                     CONF_ENERGY_SENSOR, CONF_POWER_SENSOR, DOMAIN,
                     EnergyFormat)
 from .coordinator import (MideaCoordinatorEntity, MideaDeviceUpdateCoordinator,
-                          MideaGroup5Entity)
+                          MideaGroup5Entity, MideaGroupEntity)
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -267,6 +268,142 @@ async def async_setup_entry(
             )
         )
 
+    # Dev parameter sensors (opt-in, disabled by default). Byte mappings from
+    # the T0xAC plugin reference parser, verified on a PortaSplit (00000Q1D).
+    if hasattr(device, "enable_group3_data_requests"):
+        entities.extend(
+            [
+                MideaDevParamSensor(
+                    coordinator,
+                    "expansion_valve_position",
+                    None,
+                    None,
+                    "Expansion valve position",
+                    group=3,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "outdoor_target_frequency",
+                    SensorDeviceClass.FREQUENCY,
+                    UnitOfFrequency.HERTZ,
+                    "Outdoor target frequency",
+                    group=3,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "ipm_temperature_raw",
+                    None,
+                    None,
+                    "IPM temperature (raw)",
+                    group=3,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "dc_bus_voltage_raw",
+                    None,
+                    None,
+                    "DC bus voltage (raw)",
+                    group=3,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "outdoor_return_air_temp_raw",
+                    None,
+                    None,
+                    "Return air temperature (raw)",
+                    group=3,
+                ),
+                MideaDevParamFlagsSensor(
+                    coordinator,
+                    "outdoor_status_flags",
+                    None,
+                    None,
+                    "Outdoor status flags",
+                    group=3,
+                    state_class=None,
+                ),
+            ]
+        )
+
+    if hasattr(device, "compressor_run_time") and hasattr(
+        device, "enable_group5_data_requests"
+    ):
+        entities.extend(
+            [
+                MideaDevParamSensor(
+                    coordinator,
+                    "compressor_run_time",
+                    SensorDeviceClass.DURATION,
+                    UnitOfTime.SECONDS,
+                    "Compressor run time",
+                    group=5,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "compressor_total_run_time",
+                    SensorDeviceClass.DURATION,
+                    UnitOfTime.HOURS,
+                    "Compressor total run time",
+                    group=5,
+                    state_class=SensorStateClass.TOTAL_INCREASING,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "max_voltage",
+                    SensorDeviceClass.VOLTAGE,
+                    UnitOfElectricPotential.VOLT,
+                    "Max voltage",
+                    group=5,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "min_voltage",
+                    SensorDeviceClass.VOLTAGE,
+                    UnitOfElectricPotential.VOLT,
+                    "Min voltage",
+                    group=5,
+                ),
+            ]
+        )
+
+    if hasattr(device, "enable_group6_data_requests"):
+        entities.extend(
+            [
+                MideaDevParamSensor(
+                    coordinator,
+                    "fault_count",
+                    None,
+                    None,
+                    "Fault count",
+                    group=6,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "max_outdoor_temperature",
+                    SensorDeviceClass.TEMPERATURE,
+                    UnitOfTemperature.CELSIUS,
+                    "Max outdoor temperature",
+                    group=6,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "min_outdoor_temperature",
+                    SensorDeviceClass.TEMPERATURE,
+                    UnitOfTemperature.CELSIUS,
+                    "Min outdoor temperature",
+                    group=6,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "compressor_peak_current_raw",
+                    None,
+                    None,
+                    "Compressor peak current (raw)",
+                    group=6,
+                ),
+            ]
+        )
+
     add_entities(entities)
 
 
@@ -412,3 +549,30 @@ class MideaGroup5Sensor(MideaSensor, MideaGroup5Entity):
 
         # Group5 sensors start disabled in case device doesn't support them
         self._attr_entity_registry_enabled_default = False
+
+
+class MideaDevParamSensor(MideaSensor, MideaGroupEntity):
+    """Diagnostic sensor for Midea AC dev parameter group data."""
+
+    def __init__(self, *args, group: int, **kwargs) -> None:
+        MideaSensor.__init__(self, *args, **kwargs)
+
+        self._group = group
+
+        # Dev parameter sensors start disabled since support is device specific
+        self._attr_entity_registry_enabled_default = False
+        self._attr_entity_category = EntityCategory.DIAGNOSTIC
+
+        self._attr_name = self._attr_translation_key
+        self._attr_translation_key = None
+        self._attr_has_entity_name = False
+
+
+class MideaDevParamFlagsSensor(MideaDevParamSensor):
+    """Dev parameter sensor that renders flag bytes as a hex string."""
+
+    @property
+    def native_value(self) -> str | None:
+        """Return the current native value."""
+        value = getattr(self._device, self._prop, None)
+        return value.hex() if value is not None else None
