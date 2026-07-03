@@ -75,8 +75,8 @@
           "off": "mdi:led-off"
         }
       },
-      "flash_cool": {
-        "default": "mdi:sun-snowflake"
+      "flash": {
+        "default": "mdi:flash"
       },
       "out_silent": {
         "default": "mdi:volume-off",

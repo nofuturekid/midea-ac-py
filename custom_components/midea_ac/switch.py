@@ -49,8 +49,8 @@ async def async_setup_entry(
     if hasattr(device, "breezeless") and getattr(device, "supports_breezeless", False):
         entities.append(MideaSwitch(coordinator, "breezeless"))
 
-    if hasattr(device, "flash_cool") and getattr(device, "supports_flash_cool", False):
-        entities.append(MideaSwitch(coordinator, "flash_cool"))
+    if hasattr(device, "flash") and getattr(device, "supports_flash", False):
+        entities.append(MideaSwitch(coordinator, "flash"))
 
     if hasattr(device, "out_silent") and getattr(device, "supports_out_silent", False):
         entities.append(MideaSwitch(coordinator, "out_silent"))
@@ -78,12 +78,7 @@ async def async_setup_entry(
                 )
             )
 
-    # Fresh air (新风) on/off. Gated by capability since it's a B5 feature.
-    if hasattr(device, "fresh_air") and getattr(device, "supports_fresh_air", False):
-        entities.append(
-            MideaSwitch(coordinator, "fresh_air",
-                        entity_category=EntityCategory.CONFIG)
-        )
+    # Fresh air (新风) is exposed as a fan entity (see fan.py), matching upstream.
 
     # Child lock (parent control). Only present when the device reported a value.
     if getattr(device, "parent_control", None) is not None:
