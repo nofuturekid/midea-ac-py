@@ -69,7 +69,7 @@ async def async_setup_entry(
 
     # Temperature range limit bounds (deg C, 16-30). Only when the device reports
     # the temp-range feature (parent_control). Disabled by default.
-    if getattr(device, "parent_control", None) is not None:
+    if hasattr(device, "parent_control"):
         for prop in ("parent_control_temp_down", "parent_control_temp_up"):
             entities.append(
                 MideaPropertyNumber(

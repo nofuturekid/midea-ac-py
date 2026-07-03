@@ -77,7 +77,7 @@ async def async_setup_entry(
 
     # Temperature range limit enable (app: "Temp Range"). Only present when the
     # device reported a value. The min/max bounds are number entities.
-    if getattr(device, "parent_control", None) is not None:
+    if hasattr(device, "parent_control"):
         entities.append(
             MideaSwitch(
                 coordinator, "parent_control", entity_category=EntityCategory.CONFIG
