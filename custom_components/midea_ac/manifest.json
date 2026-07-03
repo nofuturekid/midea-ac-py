@@ -4,9 +4,9 @@
   "codeowners": ["@nofuturekid"],
   "config_flow": true,
   "dependencies": [],
-  "documentation": "https://github.com/nofuturekid/midea-ac",
+  "documentation": "https://github.com/nofuturekid/midea-ac-py",
   "iot_class": "local_polling",
-  "issue_tracker": "https://github.com/nofuturekid/midea-ac/issues",
+  "issue_tracker": "https://github.com/nofuturekid/midea-ac-py/issues",
   "loggers": ["msmart"],
   "requirements": [
     "msmart-ng@git+https://github.com/nofuturekid/midea-msmart.git@main",

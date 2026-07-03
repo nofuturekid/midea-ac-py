@@ -1,8 +1,8 @@
 # Midea Smart AC
 
-[![Code Quality Checks](https://github.com/nofuturekid/midea-ac/actions/workflows/checks.yml/badge.svg)](https://github.com/nofuturekid/midea-ac/actions/workflows/checks.yml)
-[![Validate with hassfest](https://github.com/nofuturekid/midea-ac/actions/workflows/hassfest.yml/badge.svg)](https://github.com/nofuturekid/midea-ac/actions/workflows/hassfest.yml)
-[![HACS Action](https://github.com/nofuturekid/midea-ac/actions/workflows/hacs.yml/badge.svg)](https://github.com/nofuturekid/midea-ac/actions/workflows/hacs.yml)
+[![Code Quality Checks](https://github.com/nofuturekid/midea-ac-py/actions/workflows/checks.yml/badge.svg)](https://github.com/nofuturekid/midea-ac-py/actions/workflows/checks.yml)
+[![Validate with hassfest](https://github.com/nofuturekid/midea-ac-py/actions/workflows/hassfest.yml/badge.svg)](https://github.com/nofuturekid/midea-ac-py/actions/workflows/hassfest.yml)
+[![HACS Action](https://github.com/nofuturekid/midea-ac-py/actions/workflows/hacs.yml/badge.svg)](https://github.com/nofuturekid/midea-ac-py/actions/workflows/hacs.yml)
 [![hacs_badge](https://img.shields.io/badge/HACS-Custom-41BDF5.svg)](https://github.com/hacs/integration)
 
 Home Assistant custom integration to control Midea (and associated brands) air conditioners via LAN.
