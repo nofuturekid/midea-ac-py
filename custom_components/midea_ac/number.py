@@ -47,12 +47,7 @@ async def async_setup_entry(
     if hasattr(device, "off_timer"):
         entities.append(MideaPowerOffTimerNumber(coordinator))
 
-    # Fresh air (新风) fan speed. Capability-gated, so enabled when supported.
-    if hasattr(device, "fresh_air_fan_speed") and getattr(device, "supports_fresh_air", False):
-        entities.append(MideaPropertyNumber(
-            coordinator, "fresh_air_fan_speed",
-            native_min=0, native_max=100, native_step=1,
-            unit=PERCENTAGE))
+    # Fresh air (新风) is exposed as a fan entity (see fan.py), matching upstream.
 
     # Cosy/comfort sleep curve level (0-3). No capability bit, disabled-by-default.
     if hasattr(device, "cosy_sleep_mode"):
