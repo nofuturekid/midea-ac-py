@@ -164,9 +164,13 @@ class MideaGroup5Entity(MideaCoordinatorEntity):
 
 
 class MideaGroupEntity(MideaCoordinatorEntity):
-    """Entity that relies on optional group data requests."""
+    """Entity that relies on optional group data requests.
 
-    _group: int
+    A group of None means the data comes from an always-requested group
+    and no registration is needed.
+    """
+
+    _group: int | None
 
     async def async_added_to_hass(self) -> None:
         """Run when entity about to be added to hass."""
@@ -174,7 +178,8 @@ class MideaGroupEntity(MideaCoordinatorEntity):
         await super().async_added_to_hass()
 
         # Register group entity with coordinator
-        self.coordinator.register_group_entity(self._group)
+        if self._group is not None:
+            self.coordinator.register_group_entity(self._group)
 
     async def async_will_remove_from_hass(self) -> None:
         """Run when entity will be removed from hass."""
@@ -182,4 +187,5 @@ class MideaGroupEntity(MideaCoordinatorEntity):
         await super().async_will_remove_from_hass()
 
         # Unregister group entity with coordinator
-        self.coordinator.unregister_group_entity(self._group)
+        if self._group is not None:
+            self.coordinator.unregister_group_entity(self._group)

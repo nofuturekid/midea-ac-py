@@ -320,7 +320,87 @@ async def async_setup_entry(
                     None,
                     "Outdoor status flags",
                     group=3,
-                    state_class=None,
+                    active_prop="outdoor_active_flags",
+                    status_bits=(
+                        "outdoor_ac_fan_low",
+                        "outdoor_ac_fan_medium",
+                        "outdoor_ac_fan_high",
+                        "four_way_valve_on",
+                    ),
+                ),
+            ]
+        )
+
+    # Indoor status flags ride on group 2 which is always requested
+    if hasattr(device, "indoor_active_faults"):
+        entities.extend(
+            [
+                MideaDevParamFlagsSensor(
+                    coordinator,
+                    "indoor_fault_flags",
+                    None,
+                    None,
+                    "Indoor fault flags",
+                    group=None,
+                    active_prop="indoor_active_faults",
+                ),
+                MideaDevParamFlagsSensor(
+                    coordinator,
+                    "indoor_limit_flags",
+                    None,
+                    None,
+                    "Indoor frequency limit flags",
+                    group=None,
+                    active_prop="indoor_active_limits",
+                ),
+                MideaDevParamFlagsSensor(
+                    coordinator,
+                    "indoor_load_flags",
+                    None,
+                    None,
+                    "Indoor load flags",
+                    group=None,
+                    active_prop="indoor_active_loads",
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "indoor_target_fan_speed",
+                    None,
+                    None,
+                    "Indoor target fan speed",
+                    group=None,
+                ),
+            ]
+        )
+
+    if hasattr(device, "enable_group0_data_requests"):
+        entities.extend(
+            [
+                MideaDevParamSensor(
+                    coordinator,
+                    "current_run_time",
+                    SensorDeviceClass.DURATION,
+                    UnitOfTime.SECONDS,
+                    "Current run time",
+                    group=0,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "total_run_time",
+                    SensorDeviceClass.DURATION,
+                    UnitOfTime.SECONDS,
+                    "Total run time",
+                    group=0,
+                    state_class=SensorStateClass.TOTAL_INCREASING,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "power_on_time",
+                    SensorDeviceClass.DURATION,
+                    UnitOfTime.SECONDS,
+                    "Power on time",
+                    group=0,
+                    state_class=SensorStateClass.TOTAL_INCREASING,
                 ),
             ]
         )
@@ -363,6 +443,22 @@ async def async_setup_entry(
                     "Min voltage",
                     group=5,
                 ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "compensated_target_temperature",
+                    SensorDeviceClass.TEMPERATURE,
+                    UnitOfTemperature.CELSIUS,
+                    "Compensated target temperature",
+                    group=5,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "defrost_step",
+                    None,
+                    None,
+                    "Defrost step",
+                    group=5,
+                ),
             ]
         )
 
@@ -399,6 +495,30 @@ async def async_setup_entry(
                     None,
                     None,
                     "Compressor peak current (raw)",
+                    group=6,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "pfc_peak_current_raw",
+                    None,
+                    None,
+                    "PFC peak current (raw)",
+                    group=6,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "fan_peak_current_raw",
+                    None,
+                    None,
+                    "Fan peak current (raw)",
+                    group=6,
+                ),
+                MideaDevParamSensor(
+                    coordinator,
+                    "max_current_raw",
+                    None,
+                    None,
+                    "Max current (raw)",
                     group=6,
                 ),
             ]
@@ -569,10 +689,33 @@ class MideaDevParamSensor(MideaSensor, MideaGroupEntity):
 
 
 class MideaDevParamFlagsSensor(MideaDevParamSensor):
-    """Dev parameter sensor that renders flag bytes as a hex string."""
+    """Dev parameter sensor exposing decoded status flags.
+
+    The state is the number of active flags, excluding pure status bits
+    (e.g. fan stage, four-way valve). Decoded flag names and the raw
+    bytes are exposed as attributes.
+    """
+
+    def __init__(self, *args, active_prop: str, status_bits=(), **kwargs) -> None:
+        super().__init__(*args, **kwargs)
+
+        self._active_prop = active_prop
+        self._status_bits = set(status_bits)
 
     @property
-    def native_value(self) -> str | None:
-        """Return the current native value."""
-        value = getattr(self._device, self._prop, None)
-        return value.hex() if value is not None else None
+    def native_value(self) -> int | None:
+        """Return the number of active (non-status) flags."""
+        active = getattr(self._device, self._active_prop, None)
+        if active is None:
+            return None
+        return len([flag for flag in active if flag not in self._status_bits])
+
+    @property
+    def extra_state_attributes(self) -> dict:
+        """Return decoded flag names and raw bytes."""
+        active = getattr(self._device, self._active_prop, None)
+        raw = getattr(self._device, self._prop, None)
+        return {
+            "active_flags": active,
+            "raw": raw.hex() if raw is not None else None,
+        }
