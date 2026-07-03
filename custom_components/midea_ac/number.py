@@ -1,11 +1,12 @@
 """Platform for number integration."""
+
 from __future__ import annotations
 
 import logging
 
 from homeassistant.components.number import NumberEntity, NumberMode
 from homeassistant.config_entries import ConfigEntry
-from homeassistant.const import PERCENTAGE, UnitOfTime
+from homeassistant.const import PERCENTAGE, UnitOfTemperature, UnitOfTime
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 
@@ -36,10 +37,11 @@ async def async_setup_entry(
 
     # Create entity if supported
     if getattr(device, "supports_custom_fan_speed", False):
-        entities.append(MideaFanSpeedNumber(
-            coordinator,
-            config_entry.options.get(CONF_FAN_SPEED_STEP, 1)
-        ))
+        entities.append(
+            MideaFanSpeedNumber(
+                coordinator, config_entry.options.get(CONF_FAN_SPEED_STEP, 1)
+            )
+        )
 
     # Create timer entities for devices that support relative countdown timers
     if hasattr(device, "on_timer"):
@@ -51,10 +53,34 @@ async def async_setup_entry(
 
     # Cosy/comfort sleep curve level (0-3). No capability bit, disabled-by-default.
     if hasattr(device, "cosy_sleep_mode"):
-        entities.append(MideaPropertyNumber(
-            coordinator, "cosy_sleep_mode",
-            native_min=0, native_max=3, native_step=1,
-            mode=NumberMode.SLIDER, enabled_default=False))
+        entities.append(
+            MideaPropertyNumber(
+                coordinator,
+                "cosy_sleep_mode",
+                native_min=0,
+                native_max=3,
+                native_step=1,
+                mode=NumberMode.SLIDER,
+                enabled_default=False,
+            )
+        )
+
+    # Temperature range limit bounds (deg C, 16-30). Only when the device reports
+    # the temp-range feature (parent_control). Disabled by default.
+    if getattr(device, "parent_control", None) is not None:
+        for prop in ("parent_control_temp_down", "parent_control_temp_up"):
+            entities.append(
+                MideaPropertyNumber(
+                    coordinator,
+                    prop,
+                    native_min=16,
+                    native_max=30,
+                    native_step=1,
+                    unit=UnitOfTemperature.CELSIUS,
+                    mode=NumberMode.SLIDER,
+                    enabled_default=False,
+                )
+            )
 
     add_entities(entities)
 
@@ -62,22 +88,25 @@ async def async_setup_entry(
 class MideaPropertyNumber(MideaCoordinatorEntity, NumberEntity):
     """Generic property-backed number for Midea AC."""
 
-    def __init__(self,
-                 coordinator: MideaDeviceUpdateCoordinator,
-                 prop: str,
-                 *,
-                 native_min: float,
-                 native_max: float,
-                 native_step: float = 1,
-                 unit: str | None = None,
-                 mode: NumberMode = NumberMode.BOX,
-                 translation_key: str | None = None,
-                 enabled_default: bool = True,
-                 ) -> None:
+    def __init__(
+        self,
+        coordinator: MideaDeviceUpdateCoordinator,
+        prop: str,
+        *,
+        native_min: float,
+        native_max: float,
+        native_step: float = 1,
+        unit: str | None = None,
+        mode: NumberMode = NumberMode.BOX,
+        translation_key: str | None = None,
+        enabled_default: bool = True,
+    ) -> None:
         MideaCoordinatorEntity.__init__(self, coordinator)
 
         self._prop = prop
-        self._attr_translation_key = translation_key if translation_key is not None else prop
+        self._attr_translation_key = (
+            translation_key if translation_key is not None else prop
+        )
         self._attr_native_min_value = native_min
         self._attr_native_max_value = native_max
         self._attr_native_step = native_step
@@ -89,9 +118,7 @@ class MideaPropertyNumber(MideaCoordinatorEntity, NumberEntity):
     def device_info(self) -> dict:
         """Return info for device registry."""
         return {
-            "identifiers": {
-                (DOMAIN, self._device.id)
-            },
+            "identifiers": {(DOMAIN, self._device.id)},
         }
 
     @property
@@ -127,10 +154,9 @@ class MideaFanSpeedNumber(MideaCoordinatorEntity, NumberEntity):
 
     _attr_translation_key = "fan_speed"
 
-    def __init__(self,
-                 coordinator: MideaDeviceUpdateCoordinator,
-                 step_size: float = 1
-                 ) -> None:
+    def __init__(
+        self, coordinator: MideaDeviceUpdateCoordinator, step_size: float = 1
+    ) -> None:
         MideaCoordinatorEntity.__init__(self, coordinator)
 
         self._step_size = step_size
@@ -139,9 +165,7 @@ class MideaFanSpeedNumber(MideaCoordinatorEntity, NumberEntity):
     def device_info(self) -> dict:
         """Return info for device registry."""
         return {
-            "identifiers": {
-                (DOMAIN, self._device.id)
-            },
+            "identifiers": {(DOMAIN, self._device.id)},
         }
 
     @property
@@ -212,9 +236,7 @@ class _MideaTimerNumber(MideaCoordinatorEntity, NumberEntity):
     def device_info(self) -> dict:
         """Return info for device registry."""
         return {
-            "identifiers": {
-                (DOMAIN, self._device.id)
-            },
+            "identifiers": {(DOMAIN, self._device.id)},
         }
 
     @property

@@ -80,11 +80,24 @@ async def async_setup_entry(
 
     # Fresh air (新风) is exposed as a fan entity (see fan.py), matching upstream.
 
-    # Child lock (parent control). Only present when the device reported a value.
+    # Temperature range limit enable (app: "Temp Range"). Only present when the
+    # device reported a value. The min/max bounds are number entities.
     if getattr(device, "parent_control", None) is not None:
         entities.append(
             MideaSwitch(
                 coordinator, "parent_control", entity_category=EntityCategory.CONFIG
+            )
+        )
+
+    # Real remote/panel lock (the actual child lock). Disabled by default: the
+    # set path is untested on hardware and locks the physical remote.
+    if getattr(device, "remote_control_lock", None) is not None:
+        entities.append(
+            MideaSwitch(
+                coordinator,
+                "remote_control_lock",
+                entity_category=EntityCategory.CONFIG,
+                enabled_default=False,
             )
         )
 
