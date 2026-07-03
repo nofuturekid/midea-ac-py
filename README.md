@@ -35,6 +35,27 @@ This is a merged build maintained under `nofuturekid`, combining three sources o
 
 > **Note:** TurboLed's features originate from a March 2026 snapshot and ship without automated tests — verify them against your own hardware.
 
+## Changes vs. mill1000 upstream
+
+This fork tracks [mill1000/midea-ac-py](https://github.com/mill1000/midea-ac-py) and adds the Home Assistant entities below (backed by the companion [midea-msmart](https://github.com/nofuturekid/midea-msmart) fork). For the always-current, commit-level diff see the [compare view](https://github.com/mill1000/midea-ac-py/compare/main...nofuturekid:midea-ac-py:main).
+
+**Additional sensors:**
+
+- Total Power (outdoor unit), Compressor Current, Compressor Frequency
+- Indoor Fan Frequency and Indoor Fan Speed, Outdoor Fan Speed
+- Coil temperatures (T2/T3) and Discharge Temperature (TP)
+- Louver Angle, Defrost status, Firmware Version
+- `filter_alert` binary sensor
+
+**Additional controls:**
+
+- Child Lock switch
+- Filter reset button(s)
+- Power-on/off timer number entities (1-minute step)
+- Extended AC feature switches/entities
+
+Plus extra translations and icons. Fresh air is exposed via the upstream fan entity. See [About This Distribution](#about-this-distribution) for feature provenance.
+
 ## Note On Cloud Usage
 
 This integration works locally. No internet connection is required to control your device.
