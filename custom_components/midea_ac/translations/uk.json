@@ -259,13 +259,13 @@
       "current_energy_usage": {
         "name": "Поточне споживання"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "Вологість всередині"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Температура всередині"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Температура зовні"
       },
       "real_time_power_usage": {

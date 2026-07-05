@@ -334,17 +334,17 @@
       "current_energy_usage": {
         "name": "Current energy"
       },
-      "indoor_humidity": {
-        "name": "Indoor humidity"
+      "room_humidity": {
+        "name": "Room humidity"
       },
-      "indoor_temperature": {
-        "name": "Indoor temperature"
+      "room_temperature": {
+        "name": "Room temperature"
       },
-      "outdoor_fan_speed": {
-        "name": "Outdoor fan speed"
+      "condenser_fan_speed": {
+        "name": "Condenser fan speed"
       },
-      "outdoor_temperature": {
-        "name": "Outdoor temperature"
+      "ambient_temperature": {
+        "name": "Ambient temperature"
       },
       "real_time_power_usage": {
         "name": "Power"

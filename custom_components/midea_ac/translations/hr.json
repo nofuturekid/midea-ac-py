@@ -259,13 +259,13 @@
       "current_energy_usage": {
         "name": "Trenutna energija"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "Unutarnja vlažnost"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Unutarnja temperatura"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Vanjska temperatura"
       },
       "real_time_power_usage": {

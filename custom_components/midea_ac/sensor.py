@@ -43,33 +43,33 @@ async def async_setup_entry(
         # Temperature sensors
         MideaSensor(
             coordinator,
-            "indoor_temperature",
+            "room_temperature",
             SensorDeviceClass.TEMPERATURE,
             UnitOfTemperature.CELSIUS,
-            "indoor_temperature",
+            "room_temperature",
         ),
         MideaSensor(
             coordinator,
-            "outdoor_temperature",
+            "ambient_temperature",
             SensorDeviceClass.TEMPERATURE,
             UnitOfTemperature.CELSIUS,
-            "outdoor_temperature",
+            "ambient_temperature",
         ),
     ]
 
-    if hasattr(device, "indoor_humidity") and getattr(
+    if hasattr(device, "room_humidity") and getattr(
         device, "supports_humidity", False
     ):
         entities.append(
             MideaSensor(
                 coordinator,
-                "indoor_humidity",
+                "room_humidity",
                 SensorDeviceClass.HUMIDITY,
                 PERCENTAGE,
-                "indoor_humidity",
+                "room_humidity",
             )
         )
-    # outdoor_fan_speed is registered below via the group5-gated MideaGroup5Sensor
+    # condenser_fan_speed is registered below via the group5-gated MideaGroup5Sensor
     # (upstream); TurboLed's unconditional duplicate was dropped to avoid a
     # colliding unique_id.
     entities.append(
@@ -95,20 +95,20 @@ async def async_setup_entry(
     entities.append(
         MideaNewSensor(
             coordinator,
-            "indoor_target_frequency",
+            "requested_frequency",
             SensorDeviceClass.FREQUENCY,
             UnitOfFrequency.HERTZ,
-            "Indoor target frequency",
+            "Requested frequency",
             entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
         MideaNewSensor(
             coordinator,
-            "outdoor_unit_total_current",
+            "total_current",
             SensorDeviceClass.CURRENT,
             UnitOfElectricCurrent.AMPERE,
-            "Outdoor current",
+            "Total current",
             entity_category=EntityCategory.DIAGNOSTIC,
             enabled_default=False,
         )
@@ -116,10 +116,10 @@ async def async_setup_entry(
     entities.append(
         MideaNewSensor(
             coordinator,
-            "outdoor_unit_voltage",
+            "supply_voltage",
             SensorDeviceClass.VOLTAGE,
             UnitOfElectricPotential.VOLT,
-            "Outdoor voltage",
+            "Supply voltage",
             entity_category=EntityCategory.DIAGNOSTIC,
             enabled_default=False,
         )
@@ -130,7 +130,7 @@ async def async_setup_entry(
             "T2",
             SensorDeviceClass.TEMPERATURE,
             UnitOfTemperature.CELSIUS,
-            "Indoor coil temperature (T2)",
+            "Evaporator coil temperature (T2)",
             entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
@@ -140,7 +140,7 @@ async def async_setup_entry(
             "T3",
             SensorDeviceClass.TEMPERATURE,
             UnitOfTemperature.CELSIUS,
-            "Outdoor coil temperature (T3)",
+            "Condenser coil temperature (T3)",
             entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
@@ -157,20 +157,20 @@ async def async_setup_entry(
     entities.append(
         MideaNewSensor(
             coordinator,
-            "indoor_fan_speed",
+            "blower_fan_speed",
             None,
             REVOLUTIONS_PER_MINUTE,
-            "Indoor fan speed",
+            "Blower fan speed",
             entity_category=EntityCategory.DIAGNOSTIC,
         )
     )
     entities.append(
         MideaNewSensor(
             coordinator,
-            "outdoor_unit_power",
+            "compressor_power",
             SensorDeviceClass.POWER,
             UnitOfPower.WATT,
-            "Total power",
+            "Compressor power",
         )
     )
     entities.append(
@@ -261,16 +261,16 @@ async def async_setup_entry(
             ]
         )
 
-    if hasattr(device, "outdoor_fan_speed") and hasattr(
+    if hasattr(device, "condenser_fan_speed") and hasattr(
         device, "enable_group5_data_requests"
     ):
         entities.append(
             MideaGroup5Sensor(
                 coordinator,
-                "outdoor_fan_speed",
+                "condenser_fan_speed",
                 None,
                 REVOLUTIONS_PER_MINUTE,
-                "outdoor_fan_speed",
+                "condenser_fan_speed",
                 entity_category=EntityCategory.DIAGNOSTIC,
             )
         )
@@ -290,10 +290,10 @@ async def async_setup_entry(
                 ),
                 MideaDevParamSensor(
                     coordinator,
-                    "outdoor_target_frequency",
+                    "compressor_target_frequency",
                     SensorDeviceClass.FREQUENCY,
                     UnitOfFrequency.HERTZ,
-                    "Outdoor target frequency",
+                    "Compressor target frequency",
                     group=3,
                     enabled_default=True,
                 ),
@@ -315,24 +315,24 @@ async def async_setup_entry(
                 ),
                 MideaDevParamSensor(
                     coordinator,
-                    "outdoor_return_air_temp_raw",
+                    "suction_temperature_raw",
                     None,
                     None,
-                    "Return air temperature (raw)",
+                    "Suction temperature (raw)",
                     group=3,
                 ),
                 MideaDevParamFlagsSensor(
                     coordinator,
-                    "outdoor_status_flags",
+                    "compressor_status_flags",
                     None,
                     None,
-                    "Outdoor status flags",
+                    "Compressor status flags",
                     group=3,
-                    active_prop="outdoor_active_flags",
+                    active_prop="compressor_active_flags",
                     status_bits=(
-                        "outdoor_ac_fan_low",
-                        "outdoor_ac_fan_medium",
-                        "outdoor_ac_fan_high",
+                        "condenser_ac_fan_low",
+                        "condenser_ac_fan_medium",
+                        "condenser_ac_fan_high",
                         "four_way_valve_on",
                     ),
                 ),
@@ -340,42 +340,42 @@ async def async_setup_entry(
         )
 
     # Indoor status flags ride on group 2 which is always requested
-    if hasattr(device, "indoor_active_faults"):
+    if hasattr(device, "unit_active_faults"):
         entities.extend(
             [
                 MideaDevParamFlagsSensor(
                     coordinator,
-                    "indoor_fault_flags",
+                    "unit_fault_flags",
                     None,
                     None,
-                    "Indoor fault flags",
+                    "Unit fault flags",
                     group=None,
-                    active_prop="indoor_active_faults",
+                    active_prop="unit_active_faults",
                 ),
                 MideaDevParamFlagsSensor(
                     coordinator,
-                    "indoor_limit_flags",
+                    "frequency_limit_flags",
                     None,
                     None,
-                    "Indoor frequency limit flags",
+                    "Frequency limit flags",
                     group=None,
-                    active_prop="indoor_active_limits",
+                    active_prop="active_frequency_limits",
                 ),
                 MideaDevParamFlagsSensor(
                     coordinator,
-                    "indoor_load_flags",
+                    "load_flags",
                     None,
                     None,
-                    "Indoor load flags",
+                    "Load flags",
                     group=None,
-                    active_prop="indoor_active_loads",
+                    active_prop="active_loads",
                 ),
                 MideaDevParamSensor(
                     coordinator,
-                    "indoor_target_fan_speed",
+                    "blower_target_fan_speed",
                     None,
                     REVOLUTIONS_PER_MINUTE,
-                    "Indoor target fan speed",
+                    "Blower target fan speed",
                     group=None,
                     enabled_default=True,
                 ),
@@ -490,7 +490,7 @@ async def async_setup_entry(
                 ),
                 MideaDevParamSensor(
                     coordinator,
-                    "max_outdoor_temperature",
+                    "max_ambient_temperature",
                     SensorDeviceClass.TEMPERATURE,
                     UnitOfTemperature.CELSIUS,
                     "Max outdoor temperature",
@@ -498,7 +498,7 @@ async def async_setup_entry(
                 ),
                 MideaDevParamSensor(
                     coordinator,
-                    "min_outdoor_temperature",
+                    "min_ambient_temperature",
                     SensorDeviceClass.TEMPERATURE,
                     UnitOfTemperature.CELSIUS,
                     "Min outdoor temperature",

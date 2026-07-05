@@ -259,13 +259,13 @@
       "current_energy_usage": {
         "name": "Aktuálna energia"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "Vnútorná vlhkosť"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Vnútorná teplota"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Vonkajšia teplota"
       },
       "real_time_power_usage": {

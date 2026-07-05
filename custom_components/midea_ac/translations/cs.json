@@ -259,13 +259,13 @@
       "current_energy_usage": {
         "name": "Aktuální spotřeba energie"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "Vnitřní vlhkost"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Vnitřní teplota"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Venkovní teplota"
       },
       "real_time_power_usage": {
