@@ -259,13 +259,13 @@
       "current_energy_usage": {
         "name": "Egungo energia"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "Barruko hezetasuna"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Barruko tenperatura"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Kanpoko tenperatura"
       },
       "real_time_power_usage": {

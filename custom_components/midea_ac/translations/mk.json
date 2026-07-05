@@ -284,13 +284,13 @@
       "current_energy_usage": {
         "name": "Моментална потрошувачка на енергија"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "Влажност во просторија"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Температура во просторија"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Надворешна температура"
       },
       "real_time_power_usage": {

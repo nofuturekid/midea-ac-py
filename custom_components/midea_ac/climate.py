@@ -211,7 +211,7 @@ class MideaClimateDevice(MideaCoordinatorEntity[MideaDevice], ClimateEntity, Gen
     @property
     def current_temperature(self) -> float | None:
         """Return the current temperature."""
-        return self._device.indoor_temperature
+        return self._device.room_temperature
 
     @property
     def target_temperature(self) -> float | None:
@@ -233,7 +233,7 @@ class MideaClimateDevice(MideaCoordinatorEntity[MideaDevice], ClimateEntity, Gen
     @property
     def current_humidity(self) -> float | None:
         """Return the current humidity."""
-        return self._device.indoor_humidity
+        return self._device.room_humidity
 
     @property
     def target_humidity(self) -> float | None:
@@ -627,7 +627,7 @@ class MideaClimateCCDevice(MideaClimateDevice[CC]):
         # Add target humidity if in proper mode, and supported and a valid current humidity
         if (self._device.operational_mode in [CC.OperationalMode.DRY] and
                 self._device.supports_humidity and
-                self._device.indoor_humidity is not None):
+                self._device.room_humidity is not None):
             return self._supported_features | ClimateEntityFeature.TARGET_HUMIDITY
 
         return self._supported_features

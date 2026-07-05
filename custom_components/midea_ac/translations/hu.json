@@ -259,13 +259,13 @@
       "current_energy_usage": {
         "name": "Aktuális energiafogyasztás"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "Beltéri páratartalom"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Beltéri hőmérséklet"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Kültéri hőmérséklet"
       },
       "real_time_power_usage": {

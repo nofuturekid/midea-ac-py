@@ -259,13 +259,13 @@
       "current_energy_usage": {
         "name": "Nåværende energibruk"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "Innendørs fuktighet"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Innetemperatur"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Utetemperatur"
       },
       "real_time_power_usage": {

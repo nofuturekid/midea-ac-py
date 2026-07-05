@@ -259,13 +259,13 @@
       "current_energy_usage": {
         "name": "Anlık güç"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "İç nem"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "İç sıcaklık"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Dış sıcaklık"
       },
       "real_time_power_usage": {

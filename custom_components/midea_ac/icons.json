@@ -55,7 +55,7 @@
       }
     },
     "sensor": {
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "default": "mdi:sun-thermometer"
       }
     },

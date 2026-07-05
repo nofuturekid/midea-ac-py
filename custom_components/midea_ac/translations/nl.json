@@ -284,13 +284,13 @@
       "current_energy_usage": {
         "name": "Verbruikt gedurende levensduur"
       },
-      "indoor_humidity": {
+      "room_humidity": {
         "name": "Luchtvochtigheid binnen"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Binnentemperatuur"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Buitentemperatuur"
       },
       "real_time_power_usage": {

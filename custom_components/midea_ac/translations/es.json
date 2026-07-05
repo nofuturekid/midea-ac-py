@@ -259,13 +259,13 @@
       "current_energy_usage": {
         "name": "Current energy"
       },
-      "indoor_humidity": {
-        "name": "Indoor humidity"
+      "room_humidity": {
+        "name": "Room humidity"
       },
-      "indoor_temperature": {
+      "room_temperature": {
         "name": "Temperatura interior"
       },
-      "outdoor_temperature": {
+      "ambient_temperature": {
         "name": "Temperatura exterior"
       },
       "real_time_power_usage": {
