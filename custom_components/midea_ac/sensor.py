@@ -493,7 +493,7 @@ async def async_setup_entry(
                     "max_ambient_temperature",
                     SensorDeviceClass.TEMPERATURE,
                     UnitOfTemperature.CELSIUS,
-                    "Max outdoor temperature",
+                    "Max ambient temperature",
                     group=6,
                 ),
                 MideaDevParamSensor(
@@ -501,7 +501,7 @@ async def async_setup_entry(
                     "min_ambient_temperature",
                     SensorDeviceClass.TEMPERATURE,
                     UnitOfTemperature.CELSIUS,
-                    "Min outdoor temperature",
+                    "Min ambient temperature",
                     group=6,
                 ),
                 MideaDevParamSensor(
