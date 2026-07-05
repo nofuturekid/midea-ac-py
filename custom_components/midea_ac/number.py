@@ -206,13 +206,20 @@ class MideaFanSpeedNumber(MideaCoordinatorEntity, NumberEntity):
         return self._step_size
 
     @property
-    def native_value(self) -> float:
+    def native_value(self) -> float | None:
 
         speed = self._device.fan_speed
 
         # Convert enum to integer
         if isinstance(speed, self._device.FanSpeed):
             speed = speed.value
+
+        # AUTO (102) is a sentinel value, not a percentage. In auto mode the
+        # percentage slider has no defined value - "auto" is represented by the
+        # climate entity's fan_mode - so don't leak an out-of-range >100% value
+        # into the slider.
+        if speed is None or speed > self.native_max_value:
+            return None
 
         return speed
 
